@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install dependencies (API Gateway)
+        run: |
+          cd api-gateway
+          npm install
+
+      - name: Install dependencies (Frontend)
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run API Gateway tests
+        run: |
+          cd api-gateway
+          npm test
+
+      - name: Run Frontend tests
+        run: |
+          cd frontend
+          npm test
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies (Microservices)
+        run: |
+          cd microservices
+          pip install -r requirements.txt
+
+      - name: Run Microservices tests
+        run: |
+          cd microservices
+          pytest tests/
