@@ -1,0 +1,56 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: nids-backend
+    # The command is repeated here to ensure it's used, but it's also in the Dockerfile.
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      # Mount the local backend directory into the container's /app directory.
+      # This enables hot-reloading when source files are changed.
+      - ./backend:/app
+    ports:
+      # Map port 8000 on the host to port 8000 in the container.
+      - "8000:8000"
+    networks:
+      - nids-network
+    # Grant special capabilities required for network packet sniffing.
+    # NET_RAW allows the use of raw sockets.
+    # NET_ADMIN allows for network interface configuration.
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    environment:
+      # Pass sensitive configuration as environment variables for security and flexibility.
+      - JWT_SECRET_KEY=your-super-secret-key-for-development-change-in-production
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nids-frontend
+    ports:
+      # Map port 3000 on the host to port 80 in the Nginx container.
+      - "3000:80"
+    volumes:
+      # For a Vite/CRA dev server, you'd mount the src directory for hot reloading.
+      # Since we are using a production-like build with Nginx, hot reloading
+      # of the frontend requires rebuilding the image. For a pure dev setup,
+      # one might use the node development server directly. This setup
+      # prioritizes a consistent production-like environment.
+      - ./frontend/src:/app/src
+    depends_on:
+      # Ensure the backend service starts before the frontend service.
+      - backend
+    networks:
+      - nids-network
+
+# Define the shared network for inter-container communication.
+networks:
+  nids-network:
+    driver: bridge
