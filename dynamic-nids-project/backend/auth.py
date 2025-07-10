@@ -9,8 +9,8 @@ import os
 
 # --- Configuration and Setup ---
 # Load secrets and configuration from environment variables set in docker-compose.yml
-SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
+SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-super-secret-key-for-development-change-in-production")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
 # Password hashing context using bcrypt
