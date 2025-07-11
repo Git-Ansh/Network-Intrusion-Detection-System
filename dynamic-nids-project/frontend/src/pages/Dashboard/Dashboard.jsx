@@ -21,10 +21,26 @@ const Dashboard = ({ onLogout }) => {
     const fetchGraphData = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/graph');
-        setGraphData(response.data);
+        
+        // Handle data structure - backend returns 'edges', frontend expects 'links'
+        const responseData = response.data || {};
+        const nodes = responseData.nodes || [];
+        const edges = responseData.edges || [];
+        
+        // Transform edges to links for frontend compatibility
+        const transformedData = {
+          nodes: nodes,
+          links: edges.map(edge => ({
+            ...edge,
+            // Keep both source/target and id for compatibility
+            id: edge.id || `${edge.source}-${edge.target}`
+          }))
+        };
+        
+        setGraphData(transformedData);
         setStats({
-          nodeCount: response.data.nodes.length,
-          edgeCount: response.data.links.length,
+          nodeCount: nodes.length,
+          edgeCount: edges.length,
           lastUpdate: new Date().toLocaleTimeString()
         });
         setError('');
@@ -36,6 +52,14 @@ const Dashboard = ({ onLogout }) => {
         } else {
           setError('Failed to fetch graph data');
           console.error('Error fetching graph data:', error);
+          
+          // Set empty data on error to prevent undefined access
+          setGraphData({ nodes: [], links: [] });
+          setStats({
+            nodeCount: 0,
+            edgeCount: 0,
+            lastUpdate: new Date().toLocaleTimeString()
+          });
         }
       } finally {
         setIsLoading(false);
@@ -96,7 +120,7 @@ const Dashboard = ({ onLogout }) => {
             <h2>Network Graph</h2>
             <div className="graph-controls">
               <span className="graph-status">
-                {graphData.nodes.length > 0 ? '● Active' : '● No Data'}
+                {(graphData?.nodes?.length || 0) > 0 ? '● Active' : '● No Data'}
               </span>
             </div>
           </div>

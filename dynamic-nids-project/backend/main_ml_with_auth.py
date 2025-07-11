@@ -5,13 +5,14 @@ Minimal NIDS backend with authentication for frontend compatibility
 Windows-compatible with simple auth implementation
 """
 
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import asyncio
 import warnings
 import os
 from typing import Dict, Any
+import json
 
 # Suppress warnings
 warnings.filterwarnings('ignore')
@@ -259,6 +260,11 @@ async def get_graph_data():
         "timestamp": asyncio.get_event_loop().time()
     }
 
+@app.get("/api/graph", dependencies=[Depends(get_current_user)], summary="Graph Data (Alias)")
+async def get_graph():
+    """Get network graph data (alias for /api/graph/data)"""
+    return await get_graph_data()
+
 @app.get("/api/stats", summary="System Stats")
 async def get_stats():
     """Get system statistics"""
@@ -270,6 +276,81 @@ async def get_stats():
         "auth_info": "Simple token-based authentication",
         "timestamp": asyncio.get_event_loop().time()
     }
+
+# --- WebSocket Support ---
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: list = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        if websocket in self.active_connections:
+            self.active_connections.remove(websocket)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections[:]:
+            try:
+                await connection.send_text(message)
+            except:
+                self.active_connections.remove(connection)
+
+manager = ConnectionManager()
+
+@app.websocket("/ws/alerts")
+async def websocket_alerts(websocket: WebSocket):
+    """WebSocket endpoint for real-time alerts"""
+    await manager.connect(websocket)
+    try:
+        while True:
+            # Send periodic alerts
+            alert_data = {
+                "type": "alert",
+                "alerts": [
+                    {
+                        "id": 1,
+                        "type": "rule_based_detection",
+                        "severity": "medium",
+                        "message": "Suspicious traffic pattern detected",
+                        "timestamp": asyncio.get_event_loop().time()
+                    }
+                ],
+                "timestamp": asyncio.get_event_loop().time()
+            }
+            
+            await websocket.send_text(json.dumps(alert_data))
+            await asyncio.sleep(10)  # Send updates every 10 seconds
+            
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+    except Exception as e:
+        print(f"WebSocket error: {e}")
+        manager.disconnect(websocket)
+
+@app.websocket("/ws")
+async def websocket_general(websocket: WebSocket):
+    """General WebSocket endpoint"""
+    await manager.connect(websocket)
+    try:
+        while True:
+            # Send periodic updates
+            data = {
+                "type": "update",
+                "graph": await get_graph_data(),
+                "alerts": (await get_alerts())["alerts"],
+                "timestamp": asyncio.get_event_loop().time()
+            }
+            
+            await websocket.send_text(json.dumps(data))
+            await asyncio.sleep(5)  # Send updates every 5 seconds
+            
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+    except Exception as e:
+        print(f"WebSocket error: {e}")
+        manager.disconnect(websocket)
 
 # --- Startup Event ---
 @app.on_event("startup")

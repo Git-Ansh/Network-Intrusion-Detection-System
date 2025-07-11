@@ -7,8 +7,12 @@ echo ================================================================
 echo.
 echo This will start both the backend and frontend servers.
 echo.
-echo Backend:  http://localhost:8000 (Python/FastAPI)
+echo Backend:  http://localhost:8000 (Python/FastAPI with Auth)
 echo Frontend: http://localhost:5173 (React/Vite)
+echo.
+echo Demo Login Credentials:
+echo   Username: admin
+echo   Password: admin123
 echo.
 echo ================================================================
 echo.

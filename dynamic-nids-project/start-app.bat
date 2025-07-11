@@ -35,7 +35,7 @@ if not exist "frontend\node_modules" (
 
 echo [1/3] Starting Backend Server...
 call nids_env\Scripts\activate.bat
-start "NIDS Backend" cmd /k "cd /d "%cd%\backend" && set PYTHONWARNINGS=ignore && echo Starting backend server... && python main_ml_minimal.py"
+start "NIDS Backend" cmd /k "cd /d "%cd%\backend" && set PYTHONWARNINGS=ignore && echo Starting backend server with auth... && python main_ml_with_auth.py"
 
 echo [*] Backend starting on http://localhost:8000
 echo [*] Waiting for backend to start...
