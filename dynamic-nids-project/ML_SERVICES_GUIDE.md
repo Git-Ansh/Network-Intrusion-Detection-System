@@ -7,8 +7,9 @@ The NIDS system now includes comprehensive ML services with adaptive functionali
 ## Available Modes
 
 ### 1. Full ML Mode (`main_ml.py`)
+
 - **Requirements**: pandas, scikit-learn, numpy, joblib
-- **Features**: 
+- **Features**:
   - Advanced anomaly detection with Random Forest and Isolation Forest
   - Real-time model training and retraining
   - Feature importance analysis
@@ -16,6 +17,7 @@ The NIDS system now includes comprehensive ML services with adaptive functionali
   - Ensemble predictions with confidence scoring
 
 ### 2. Basic ML Mode (`main.py`)
+
 - **Requirements**: Basic dependencies + numpy, joblib
 - **Features**:
   - Automatically detects ML services availability
@@ -23,6 +25,7 @@ The NIDS system now includes comprehensive ML services with adaptive functionali
   - Enhanced API endpoints for ML status
 
 ### 3. Simple Mode (`main_simple.py`)
+
 - **Requirements**: Only basic FastAPI dependencies
 - **Features**:
   - Rule-based anomaly detection
@@ -30,6 +33,7 @@ The NIDS system now includes comprehensive ML services with adaptive functionali
   - No external ML dependencies
 
 ### 4. Minimal Mode (`main_minimal.py`)
+
 - **Requirements**: FastAPI only
 - **Features**:
   - Basic functionality without authentication
@@ -40,17 +44,20 @@ The NIDS system now includes comprehensive ML services with adaptive functionali
 ### Core Components
 
 1. **MLServices Class** (`ml_services.py`)
+
    - Central coordinator for all ML functionality
    - Adaptive initialization based on available dependencies
    - Unified interface for different ML backends
 
 2. **AdvancedMLDetector Class**
+
    - Uses scikit-learn for sophisticated anomaly detection
    - Supports Random Forest (supervised) and Isolation Forest (unsupervised)
    - Automatic model training with synthetic data
    - Feature scaling and preprocessing
 
 3. **SimpleAnomalyDetector Class** (`simple_detector.py`)
+
    - Rule-based detection for environments without ML libraries
    - Statistical anomaly detection
    - Port-based suspicious activity detection
@@ -63,18 +70,21 @@ The NIDS system now includes comprehensive ML services with adaptive functionali
 ### Features
 
 #### Anomaly Detection
+
 - **Multi-model ensemble**: Combines Random Forest and Isolation Forest predictions
 - **Confidence scoring**: Provides confidence levels for each prediction
 - **Adaptive thresholds**: Adjusts detection sensitivity based on network patterns
 - **Real-time analysis**: Processes packets as they arrive
 
 #### Model Management
+
 - **Auto-training**: Trains models with synthetic data if no pre-trained models exist
 - **Model persistence**: Saves/loads models to/from disk
 - **Retraining API**: Allows manual model retraining via API endpoints
 - **Feature importance**: Tracks which features are most important for detection
 
 #### Performance Monitoring
+
 - **Prediction metrics**: Tracks total predictions, anomaly rates, confidence scores
 - **Response times**: Monitors ML pipeline performance
 - **Resource usage**: Tracks memory and CPU usage (future enhancement)
@@ -82,20 +92,24 @@ The NIDS system now includes comprehensive ML services with adaptive functionali
 ## API Endpoints
 
 ### ML Status and Control
+
 - `GET /api/ml/status` - Get ML services status and model information
 - `GET /api/ml/feature-importance` - Get feature importance from models
 - `POST /api/ml/retrain` - Trigger model retraining
 
 ### System Status
+
 - `GET /api/status` - Comprehensive system status including ML services
 - `GET /api/graph/data` - Network graph data with ML-enhanced annotations
 
 ### Real-time Communication
+
 - `WebSocket /ws/alerts` - Real-time alerts including ML predictions
 
 ## Configuration
 
 ### Environment Variables
+
 ```bash
 # ML Model Configuration
 ML_MODELS_DIR=models/
@@ -111,7 +125,9 @@ PERFORMANCE_LOG_INTERVAL=300
 ```
 
 ### Model Configuration
+
 Models are stored in the `models/` directory:
+
 - `rf_model.joblib` - Random Forest classifier
 - `if_model.joblib` - Isolation Forest detector
 - `scaler.joblib` - Feature scaler
@@ -121,12 +137,14 @@ Models are stored in the `models/` directory:
 ### Starting the System
 
 1. **Automatic Mode Detection**:
+
    ```bash
    python backend/test_ml.py
    # Follow the recommendation
    ```
 
 2. **Full ML Mode**:
+
    ```bash
    python backend/main_ml.py
    ```
@@ -142,7 +160,7 @@ Models are stored in the `models/` directory:
 import requests
 
 # Check ML status
-response = requests.get("http://localhost:8000/api/ml/status", 
+response = requests.get("http://localhost:8000/api/ml/status",
                        headers={"Authorization": "Bearer YOUR_TOKEN"})
 print(response.json())
 
@@ -160,14 +178,14 @@ print(response.json())
 ### WebSocket Integration
 
 ```javascript
-const ws = new WebSocket('ws://localhost:8000/ws/alerts');
+const ws = new WebSocket("ws://localhost:8000/ws/alerts");
 
-ws.onmessage = function(event) {
-    const alert = JSON.parse(event.data);
-    if (alert.type === 'ML_Anomaly') {
-        console.log('ML detected anomaly:', alert);
-        console.log('Confidence:', alert.details.ml_prediction.confidence);
-    }
+ws.onmessage = function (event) {
+  const alert = JSON.parse(event.data);
+  if (alert.type === "ML_Anomaly") {
+    console.log("ML detected anomaly:", alert);
+    console.log("Confidence:", alert.details.ml_prediction.confidence);
+  }
 };
 ```
 
@@ -176,16 +194,19 @@ ws.onmessage = function(event) {
 ### Common Issues
 
 1. **pandas Installation Fails**
+
    - Try installing with `--no-cache-dir` flag
    - Use older pandas version (1.5.3)
    - Check Python version compatibility (3.8-3.11 recommended for pandas)
 
 2. **scikit-learn Build Errors**
+
    - Install Microsoft C++ Build Tools
    - Use pre-compiled wheels: `pip install --only-binary=all scikit-learn`
    - Try older scikit-learn version (1.3.0)
 
 3. **Memory Issues**
+
    - Reduce model complexity: fewer estimators in Random Forest
    - Increase system RAM or use cloud instance
    - Use simple mode for resource-constrained environments
@@ -243,12 +264,14 @@ custom_features = [
 ## Performance Benchmarks
 
 ### Typical Performance (on modern hardware)
+
 - **Prediction latency**: < 1ms per packet
 - **Memory usage**: 50-200MB (depending on model size)
 - **CPU usage**: 1-5% under normal load
 - **Training time**: 30-60 seconds for 10,000 samples
 
 ### Scalability
+
 - **Packet rate**: Up to 10,000 packets/second
 - **Concurrent connections**: 100+ WebSocket clients
 - **Model size**: Up to 100MB loaded models

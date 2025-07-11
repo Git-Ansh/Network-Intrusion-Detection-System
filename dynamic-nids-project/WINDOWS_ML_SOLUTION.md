@@ -50,12 +50,14 @@ Created a batch script that:
 ## Usage Instructions
 
 ### Option 1: Quick Start (Recommended)
+
 ```bash
 # Run the robust startup script
 start-robust.bat
 ```
 
 ### Option 2: Manual Startup with Warning Suppression
+
 ```bash
 # Activate environment with warning suppression
 set PYTHONWARNINGS=ignore::RuntimeWarning:numpy
@@ -66,6 +68,7 @@ python backend/main_robust.py
 ```
 
 ### Option 3: Simple Mode (If ML fails completely)
+
 ```bash
 # Start without ML dependencies
 python backend/main_simple.py
@@ -74,21 +77,25 @@ python backend/main_simple.py
 ## Benefits of This Solution
 
 ### ✅ **Stability**
+
 - No crashes from numpy warnings
 - Graceful fallbacks when ML fails
 - Comprehensive error handling
 
 ### ✅ **Compatibility**
+
 - Works with experimental numpy builds
 - Handles missing ML dependencies
 - Compatible across Windows versions
 
 ### ✅ **Functionality**
+
 - Full ML when possible
 - Rule-based detection as fallback
 - All NIDS features still available
 
 ### ✅ **Diagnostics**
+
 - Clear status reporting
 - ML availability testing
 - Error logging and reporting
@@ -96,12 +103,14 @@ python backend/main_simple.py
 ## API Endpoints for ML Status
 
 ### Check ML Status
+
 ```http
 GET /api/ml/status
 Authorization: Bearer <token>
 ```
 
 Response:
+
 ```json
 {
   "ml_available": true,
@@ -117,12 +126,14 @@ Response:
 ```
 
 ### Test ML Prediction
+
 ```http
 POST /api/test/ml
 Authorization: Bearer <token>
 ```
 
 Response:
+
 ```json
 {
   "test_features": {
@@ -142,23 +153,30 @@ Response:
 ## Troubleshooting
 
 ### Issue: "MINGW-W64" Warning Still Appears
+
 **Solution**: Use the startup script which sets proper environment variables.
 
 ### Issue: pandas Import Fails
+
 **Solutions**:
+
 1. Try installing with `--only-binary=all pandas`
 2. Use older version: `pip install pandas==1.5.3`
 3. System will fall back to simple mode automatically
 
 ### Issue: scikit-learn Build Errors
+
 **Solutions**:
+
 1. Install Microsoft C++ Build Tools
 2. Use pre-compiled wheels: `pip install --only-binary=all scikit-learn`
 3. Try older version: `pip install scikit-learn==1.3.0`
 4. System will use rule-based detection as fallback
 
 ### Issue: Memory or Performance Problems
+
 **Solutions**:
+
 1. Reduce model complexity in robust ML services
 2. Use simple mode: `python backend/main_simple.py`
 3. Set thread limits: `set OMP_NUM_THREADS=1`
@@ -166,6 +184,7 @@ Response:
 ## Alternative Solutions
 
 ### 1. Use Conda (Recommended for Production)
+
 ```bash
 # Create conda environment with compatible packages
 conda create -n nids python=3.11
@@ -174,12 +193,14 @@ conda install pandas scikit-learn numpy
 ```
 
 ### 2. Use Docker
+
 ```bash
 # Use Linux-based Docker container (no Windows numpy issues)
 docker-compose up
 ```
 
 ### 3. Use Python 3.11 or Earlier
+
 ```bash
 # Install Python 3.11 which has better package compatibility
 # Then create virtual environment with that version
@@ -203,11 +224,13 @@ start-with-ml.bat             # Alternative startup script
 ## Performance Impact
 
 ### With Robust ML Services:
+
 - **Prediction Latency**: 1-5ms (includes error handling)
 - **Memory Usage**: 50-200MB
 - **Startup Time**: 10-30 seconds (includes dependency testing)
 
 ### With Simple Mode:
+
 - **Prediction Latency**: <1ms
 - **Memory Usage**: 20-50MB
 - **Startup Time**: 2-5 seconds

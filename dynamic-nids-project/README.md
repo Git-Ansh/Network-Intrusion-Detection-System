@@ -17,6 +17,7 @@ This system implements a multi-container architecture with:
 The system now includes comprehensive machine learning services with adaptive functionality:
 
 #### **Advanced ML Mode**
+
 - **Random Forest Classifier**: Supervised learning for known attack patterns
 - **Isolation Forest**: Unsupervised anomaly detection for novel threats
 - **Ensemble Predictions**: Combines multiple models for higher accuracy
@@ -24,12 +25,14 @@ The system now includes comprehensive machine learning services with adaptive fu
 - **Feature Importance Analysis**: Understand which network features are most critical
 
 #### **Adaptive Architecture**
+
 - **Auto-Detection**: Automatically detects available ML libraries
 - **Graceful Fallbacks**: Falls back to simpler methods if ML libraries unavailable
 - **Multiple Modes**: Full ML, Basic ML, Simple Rule-based, and Minimal modes
 - **Performance Monitoring**: Real-time tracking of prediction accuracy and performance
 
 #### **ML API Endpoints**
+
 - `GET /api/ml/status` - Check ML services status and model information
 - `GET /api/ml/feature-importance` - Get feature importance from models
 - `POST /api/ml/retrain` - Trigger model retraining
@@ -38,12 +41,12 @@ The system now includes comprehensive machine learning services with adaptive fu
 ### Core Components
 
 1. **Real-Time Traffic Capture**: Uses PyShark for live packet sniffing
-2. **Advanced ML Pipeline**: 
+2. **Advanced ML Pipeline**:
    - Multi-model anomaly detection (Random Forest + Isolation Forest)
    - Automatic feature engineering and scaling
    - Confidence scoring and ensemble predictions
    - Fallback to rule-based detection when needed
-3. **Dynamic Graph Analysis**: 
+3. **Dynamic Graph Analysis**:
    - NetworkX-based graph modeling
    - Centrality analysis for detecting suspicious nodes
    - DBSCAN clustering for topological outliers
@@ -63,21 +66,24 @@ The system now includes comprehensive machine learning services with adaptive fu
 ## 🚀 Quick Start
 
 ### One-Click Launch (Easiest)
+
 1. **Double-click**: `🚀 Start NIDS.bat`
 2. **Wait**: Both backend and frontend will start automatically
 3. **Access**: Frontend opens at http://localhost:5173, Backend API at http://localhost:8000
 
 ### Alternative Launch Methods
+
 - **Full Stack**: `start-app.bat` (Batch) or `start-app.ps1` (PowerShell)
 - **Backend Only**: `start-minimal-ml.bat`
 - **Stop Services**: `🛑 Stop NIDS.bat`
 
 ### Manual Setup (If needed)
+
 ```bash
 # 1. Setup environment
 setup.bat
 
-# 2. Start application  
+# 2. Start application
 start-app.bat
 ```
 
@@ -90,12 +96,14 @@ start-app.bat
 ### Using Docker (Recommended)
 
 1. **Clone and setup**:
+
    ```bash
    git clone <repository-url>
    cd dynamic-nids-project
    ```
 
 2. **Train ML models** (required on first run):
+
    ```bash
    cd backend
    python train_models.py
@@ -103,6 +111,7 @@ start-app.bat
    ```
 
 3. **Start the system**:
+
    ```bash
    docker-compose up --build
    ```
@@ -115,6 +124,7 @@ start-app.bat
 ### Local Development
 
 1. **Backend setup**:
+
    ```bash
    cd backend
    python -m venv venv
@@ -134,6 +144,7 @@ start-app.bat
 ### Local Development with ML Services
 
 #### **Quick Start Scripts**
+
 ```bash
 # Test ML dependencies and get recommendations
 python backend/test_ml.py
@@ -143,12 +154,13 @@ python backend/test_ml.py --auto-start
 
 # Manual mode selection
 python backend/main_ml.py      # Full ML mode
-python backend/main.py         # Adaptive mode  
+python backend/main.py         # Adaptive mode
 python backend/main_simple.py  # Simple mode
 python backend/main_minimal.py # Minimal mode
 ```
 
 #### **Windows Quick Start** 🪟
+
 ```bash
 # Robust startup with Windows compatibility (RECOMMENDED)
 start-robust.bat
@@ -164,6 +176,7 @@ start-minimal.bat
 ```
 
 #### **Backend Setup**
+
 ```bash
 cd backend
 python -m venv venv
@@ -176,16 +189,19 @@ uvicorn main:app --reload
 ## Available Launcher Scripts
 
 ### 🚀 Main Launchers
+
 - **`🚀 Start NIDS.bat`** - One-click launcher (recommended)
-- **`start-app.bat`** - Full stack startup (Batch)  
+- **`start-app.bat`** - Full stack startup (Batch)
 - **`start-app.ps1`** - Full stack startup (PowerShell)
 - **`🛑 Stop NIDS.bat`** - Stop all services
 
 ### 🔧 Backend-Only Scripts
+
 - **`start-minimal-ml.bat`** - Start minimal ML backend only
 - **`start-backend-simple.bat`** - Start simple backend without ML
 
 ### 📋 Service Management
+
 - **`setup.bat`** - Initial environment setup
 - **`install-deps.bat`** - Install all dependencies
 
@@ -194,6 +210,7 @@ uvicorn main:app --reload
 ## API Documentation
 
 Once the backend is running, interactive API documentation is available at:
+
 - Swagger UI: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 
@@ -287,6 +304,7 @@ dynamic-nids-project/
 ### Logs
 
 View container logs:
+
 ```bash
 docker-compose logs backend
 docker-compose logs frontend
@@ -314,6 +332,7 @@ This project is for educational and research purposes. Please ensure compliance 
 ## References
 
 The system design is based on modern NIDS architecture principles and incorporates:
+
 - Real-time packet analysis techniques
 - Graph-based network security analysis
 - Machine learning for anomaly detection
@@ -323,12 +342,12 @@ The system design is based on modern NIDS architecture principles and incorporat
 
 ### Mode Selection Guide
 
-| Mode | Requirements | Features | Use Case |
-|------|-------------|----------|----------|
-| **Full ML** | pandas, scikit-learn | Advanced ML models, ensemble predictions, model training | Production environments |
-| **Adaptive** | Basic dependencies | Auto-detects ML availability, falls back gracefully | Development, testing |
-| **Simple** | FastAPI only | Rule-based detection, statistical analysis | Resource-constrained environments |
-| **Minimal** | FastAPI only | Basic functionality, no authentication | Quick demos, troubleshooting |
+| Mode         | Requirements         | Features                                                 | Use Case                          |
+| ------------ | -------------------- | -------------------------------------------------------- | --------------------------------- |
+| **Full ML**  | pandas, scikit-learn | Advanced ML models, ensemble predictions, model training | Production environments           |
+| **Adaptive** | Basic dependencies   | Auto-detects ML availability, falls back gracefully      | Development, testing              |
+| **Simple**   | FastAPI only         | Rule-based detection, statistical analysis               | Resource-constrained environments |
+| **Minimal**  | FastAPI only         | Basic functionality, no authentication                   | Quick demos, troubleshooting      |
 
 ### ML Performance Benchmarks
 
@@ -353,6 +372,7 @@ pip install --only-binary=all pandas scikit-learn
 ## Troubleshooting
 
 #### **Windows Compatibility** ⚠️
+
 - **Robust ML Services**: Handles Windows numpy/pandas compatibility issues
 - **Warning Suppression**: Automatically suppresses experimental numpy warnings
 - **Graceful Fallbacks**: Falls back to simpler methods if ML libraries fail
@@ -360,6 +380,7 @@ pip install --only-binary=all pandas scikit-learn
 - **Multiple Modes**: Robust, Simple, and Minimal modes for different environments
 
 #### **ML API Endpoints**
+
 - `GET /api/ml/status` - Check ML services status and model information
 - `GET /api/ml/feature-importance` - Get feature importance from models
 - `POST /api/ml/retrain` - Trigger model retraining

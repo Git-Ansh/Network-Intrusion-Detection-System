@@ -7,9 +7,10 @@ I've created a comprehensive set of launcher scripts that make it incredibly eas
 ## 🎯 Main Launchers
 
 ### 1. **🚀 Start NIDS.bat** (Recommended - One-Click Solution)
+
 - **What it does**: Starts everything automatically
 - **How to use**: Just double-click this file
-- **Features**: 
+- **Features**:
   - Auto-setup if needed
   - Starts backend (Python/FastAPI)
   - Starts frontend (React/Vite)
@@ -17,6 +18,7 @@ I've created a comprehensive set of launcher scripts that make it incredibly eas
   - Creates separate terminal windows for each service
 
 ### 2. **start-app.bat** (Full Control)
+
 - **What it does**: Comprehensive startup with status checks
 - **Features**:
   - Detailed progress reporting
@@ -26,6 +28,7 @@ I've created a comprehensive set of launcher scripts that make it incredibly eas
   - Browser launch
 
 ### 3. **start-app.ps1** (PowerShell Version)
+
 - **What it does**: Same as start-app.bat but with PowerShell features
 - **Features**:
   - Enhanced error handling
@@ -36,6 +39,7 @@ I've created a comprehensive set of launcher scripts that make it incredibly eas
 ## 🛑 Service Management
 
 ### **🛑 Stop NIDS.bat**
+
 - **What it does**: Cleanly stops all NIDS services
 - **Features**:
   - Stops all Python processes (backend)
@@ -46,11 +50,13 @@ I've created a comprehensive set of launcher scripts that make it incredibly eas
 ## 🔧 Technical Details
 
 ### Services Started:
+
 1. **Backend Server**
+
    - Location: `backend/main_ml_minimal.py`
    - Port: 8000
    - Features: ML-enabled anomaly detection, REST API
-   - URLs: 
+   - URLs:
      - API: http://localhost:8000
      - Docs: http://localhost:8000/docs
 
@@ -61,6 +67,7 @@ I've created a comprehensive set of launcher scripts that make it incredibly eas
    - URL: http://localhost:5173
 
 ### Automatic Features:
+
 - ✅ Virtual environment activation
 - ✅ Dependency checking and installation
 - ✅ Service health monitoring
@@ -71,27 +78,32 @@ I've created a comprehensive set of launcher scripts that make it incredibly eas
 ## 📖 Usage Instructions
 
 ### First Time Setup:
+
 1. **Double-click** `🚀 Start NIDS.bat`
 2. **Wait** for automatic setup and service startup
 3. **Use** the application that opens in your browser
 
 ### Daily Usage:
+
 1. **Double-click** `🚀 Start NIDS.bat`
 2. **Access** your NIDS dashboard immediately
 
 ### To Stop:
+
 1. **Double-click** `🛑 Stop NIDS.bat`
 2. **Or** close the terminal windows manually
 
 ## 🎉 What This Achieves
 
 ### For Users:
+
 - **Zero-Configuration**: Just double-click to start
 - **Automatic Setup**: No manual environment management
 - **Instant Access**: Browser opens automatically
 - **Easy Shutdown**: One-click service stopping
 
 ### For Developers:
+
 - **Separate Windows**: Backend and frontend in their own terminals
 - **Live Logs**: See real-time service output
 - **Easy Debugging**: Individual service control
@@ -108,6 +120,7 @@ You now have a **professional-grade application launcher** that:
 5. **🛑 Stops cleanly** when needed
 
 ### Quick Commands:
+
 - **Start Everything**: Double-click `🚀 Start NIDS.bat`
 - **Stop Everything**: Double-click `🛑 Stop NIDS.bat`
 - **Frontend Only**: `cd frontend && npm run dev`
