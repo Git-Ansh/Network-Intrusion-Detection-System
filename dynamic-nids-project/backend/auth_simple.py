@@ -1,20 +1,16 @@
-# backend/auth.py
+# backend/auth_simple.py - Simplified auth without bcrypt issues
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from datetime import datetime, timedelta
 import os
+import hashlib
 
 # --- Configuration and Setup ---
-# Load secrets and configuration from environment variables set in docker-compose.yml
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-super-secret-key-for-development-change-in-production")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
-
-# Password hashing context using bcrypt
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # OAuth2 scheme that specifies the token endpoint
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -22,24 +18,29 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # Create a router to group authentication-related endpoints
 router = APIRouter()
 
+# Simple password hashing (for demo only - use bcrypt in production)
+def simple_hash(password: str) -> str:
+    """Simple password hashing for demo purposes"""
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def verify_simple_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify password against simple hash"""
+    return simple_hash(plain_password) == hashed_password
+
 # --- In-Memory User Database (for prototype) ---
-# In a production system, this would be replaced with a proper database query.
 fake_users_db = {
     "testuser": {
         "username": "testuser",
         "full_name": "Test User",
         "email": "test@example.com",
-        "hashed_password": pwd_context.hash("testpassword"),
+        "hashed_password": simple_hash("testpassword"),
         "disabled": False,
     }
 }
 
-# --- Utility Functions ---
-def verify_password(plain_password, hashed_password):
-    """Verifies a plain password against a hashed one."""
-    return pwd_context.verify(plain_password, hashed_password)
+from typing import Optional
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     """Creates a new JWT access token."""
     to_encode = data.copy()
     if expires_delta:
@@ -53,8 +54,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 # --- Dependency for Protected Routes ---
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     """
-    Decodes the JWT token to get the current user. This function is used as a
-    dependency in protected endpoints.
+    Decodes the JWT token to get the current user.
     """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -64,7 +64,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
-        if username is None or not isinstance(username, str):
+        if username is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
@@ -81,7 +81,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     Authenticates a user and returns an access token.
     """
     user = fake_users_db.get(form_data.username)
-    if not user or not verify_password(form_data.password, user["hashed_password"]):
+    if not user or not verify_simple_password(form_data.password, user["hashed_password"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
